@@ -47,7 +47,8 @@ const wrapper = document.querySelector('#wrapper');
 
 const SinglePlanet = {
 	SolarSystem: data => new SolarSystem(data),
-	Sun: data => new Sun(data)
+	Sun: data => new Sun(data),
+	Earth: data => new Earth(data)
 }
 
 class Planets{
@@ -149,6 +150,22 @@ class Sun extends Planet{
 
 	sunMethod(){
 		alert(`Hello, I'm ${this.name}`);
+	}
+}
+
+
+class Earth extends Planet{
+	constructor(planet){
+		super(planet);
+	}
+
+	pipelineClick(){
+		super.pipelineClick();
+		this.earthMethod();
+	}
+
+	earthMethod(){
+		console.log(`Hello, I'm ${this.name}`);
 	}
 }
 
