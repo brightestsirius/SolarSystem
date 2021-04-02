@@ -1,4 +1,4 @@
-const SolarSystem = [
+const SolarSystemData = [
 	{
 		name: `Solar System`,
 		data: `The Solar System is the gravitationally bound system of the Sun and the objects that orbit it, either directly or indirectly. Of the objects that orbit the Sun directly, the largest are the eight planets, with the remainder being smaller objects, the dwarf planets and small Solar System bodies.`
@@ -42,19 +42,30 @@ const SolarSystem = [
 ]
 
 const accordionSolarSystem = document.querySelector('#accordionSolarSystem');
+const renderSolarSystem = document.querySelector('#renderSolarSystem');
+const wrapper = document.querySelector('#wrapper');
+
+const SinglePlanet = {
+	SolarSystem: data => new SolarSystem(data),
+	Sun: data => new Sun(data)
+}
 
 class Planets{
 	static createPlanets(arr){
 		console.log(arr);
 
-		let planets = arr
-			.map(planet=>new Planet(planet))
+		let planets = arr.map(planet => SinglePlanet[planet.name.replace(' ','')] ? SinglePlanet[planet.name.replace(' ','')](planet) : new Planet(planet))
+		console.log(planets);
+			
+		let planetsAccordion = planets
 			.map((planet,index)=>planet.renderPlanet(index))
 			.join('');
 
-		accordionSolarSystem.innerHTML = planets;
+		planets.map(planet=>{
+			planet.renderPipeline()
+		})
 
-		console.log(planets);
+		accordionSolarSystem.innerHTML = planetsAccordion;
 	}
 }
 
@@ -82,6 +93,58 @@ class Planet{
 		    </div>
 		  </div>`;
 	}
+
+	renderPipeline(){
+
+		let planetBlock = document.createElement('div');
+		planetBlock.classList.add('render__planet')
+
+		let planet = document.createElement('img');
+		planet.id = `render__${this.name.replace(' ','')}`;
+		planet.src = `./images/${this.name.replace(' ','')}.svg`
+		planet.alt = this.name;
+		planet.width = 35;
+		planet.height = 35;
+
+		planet.setAttribute('data-bs-toggle','tooltip');
+		planet.setAttribute('data-bs-placement','top');
+		planet.title = this.name;
+
+		planet.addEventListener('click',()=>{
+			let btn = document.querySelector(`button[aria-controls="collapse${this.name.replace(' ','')}"]`);
+			btn.click();
+		});
+
+		let planetTitle = document.createElement('p');
+		planetTitle.innerHTML = this.name;
+
+		planetBlock.append(planet);
+		planetBlock.append(planetTitle);
+
+		renderSolarSystem.append(planetBlock);
+	}
 }
 
-Planets.createPlanets(SolarSystem);
+class SolarSystem extends Planet{
+	constructor(planet){
+		super(planet);
+	}
+
+	renderPipeline(){
+		let heading = document.createElement('h1');
+		heading.innerHTML = `<img src="images/${this.name.replace(' ','')}.svg" alt="${this.name}" width="50" height="50"> Introduction to ${this.name}`;
+		wrapper.prepend(heading);
+	}
+}
+
+class Sun extends Planet{
+	constructor(planet){
+		super(planet);
+	}
+}
+
+Planets.createPlanets(SolarSystemData);
+
+
+
+
