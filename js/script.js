@@ -61,9 +61,7 @@ class Planets{
 			.map((planet,index)=>planet.renderPlanet(index))
 			.join('');
 
-		planets.map(planet=>{
-			planet.renderPipeline()
-		})
+		planets.map(planet=>planet.renderPipeline());
 
 		accordionSolarSystem.innerHTML = planetsAccordion;
 	}
@@ -110,10 +108,7 @@ class Planet{
 		planet.setAttribute('data-bs-placement','top');
 		planet.title = this.name;
 
-		planet.addEventListener('click',()=>{
-			let btn = document.querySelector(`button[aria-controls="collapse${this.name.replace(' ','')}"]`);
-			btn.click();
-		});
+		planet.addEventListener('click',this.pipelineClick.bind(this));
 
 		let planetTitle = document.createElement('p');
 		planetTitle.innerHTML = this.name;
@@ -122,6 +117,11 @@ class Planet{
 		planetBlock.append(planetTitle);
 
 		renderSolarSystem.append(planetBlock);
+	}
+
+	pipelineClick(){
+		let btn = document.querySelector(`button[aria-controls="collapse${this.name.replace(' ','')}"]`);
+			btn.click();
 	}
 }
 
@@ -140,6 +140,15 @@ class SolarSystem extends Planet{
 class Sun extends Planet{
 	constructor(planet){
 		super(planet);
+	}
+
+	pipelineClick(){
+		super.pipelineClick();
+		this.sunMethod();
+	}
+
+	sunMethod(){
+		alert(`Hello, I'm ${this.name}`);
 	}
 }
 
